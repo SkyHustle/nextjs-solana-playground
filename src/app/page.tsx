@@ -4,6 +4,7 @@ import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react
 import { WalletModalProvider, WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
 import { clusterApiUrl } from "@solana/web3.js";
+import { BalanceDisplay } from "@/components/BalanceDisplay";
 
 const Home: NextPage = (props) => {
     const endpoint = clusterApiUrl("devnet");
@@ -14,7 +15,7 @@ const Home: NextPage = (props) => {
             <WalletProvider wallets={[wallet]}>
                 <WalletModalProvider>
                     <WalletMultiButton />
-                    <p>Put the rest of your app here</p>
+                    <BalanceDisplay />
                 </WalletModalProvider>
             </WalletProvider>
         </ConnectionProvider>
