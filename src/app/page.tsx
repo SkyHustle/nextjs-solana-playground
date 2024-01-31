@@ -1,8 +1,7 @@
-import { NavBar } from "@/components/ui/navbar";
 import { NextPage } from "next";
 
 const Home: NextPage = (props) => {
-  return <NavBar />;
+  return <div>Home Page</div>;
 };
 
 export default Home;
