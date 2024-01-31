@@ -17,6 +17,9 @@ dependencies:
   '@solana/wallet-adapter-wallets':
     specifier: ^0.19.26
     version: 0.19.26(@babel/runtime@7.23.8)(@solana/web3.js@1.89.0)(bs58@4.0.1)(react-dom@18.0.0)(react-native@0.73.2)(react@18.0.0)(tslib@2.6.2)
+  '@tanstack/react-query':
+    specifier: ^5.18.0
+    version: 5.18.0(react@18.0.0)
   next:
     specifier: 14.0.4
     version: 14.0.4(@babel/core@7.23.7)(react-dom@18.0.0)(react@18.0.0)
@@ -3537,6 +3540,19 @@ packages:
     resolution: {integrity: sha512-E4KcWTpoLHqwPHLxidpOqQbcrZVgi0rsmmZXUle1jXmJfuIf/UWpczUJ7MZZ5tlxytgJXyp0w4PGkkeLiuIdZw==}
     dependencies:
       tslib: 2.6.2
+    dev: false
+
+  /@tanstack/query-core@5.18.0:
+    resolution: {integrity: sha512-8c6nxeAnGHxIDZIyDmHdmgFt4D+LprAQaJmjsnM4szcIjsWOyFlzxdqQUuQ/XuQRvUgqYaqlJTtDADlSS7pTPQ==}
+    dev: false
+
+  /@tanstack/react-query@5.18.0(react@18.0.0):
+    resolution: {integrity: sha512-7FKxNfxxKEL7n3ADpwp81Fy4FX85hNkYVzQQVQsF0JAPl93c3d1gmNZMIbEtOqgYfom1/ontGh3FiZGYj3xyWA==}
+    peerDependencies:
+      react: ^18.0.0
+    dependencies:
+      '@tanstack/query-core': 5.18.0
+      react: 18.0.0
     dev: false
 
   /@toruslabs/base-controllers@2.9.0(@babel/runtime@7.23.8):
