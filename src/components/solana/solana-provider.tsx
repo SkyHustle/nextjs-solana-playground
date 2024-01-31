@@ -1,10 +1,9 @@
 "use client";
 import dynamic from "next/dynamic";
 
-import { WalletError } from "@solana/wallet-adapter-base";
+import { WalletError, WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import { ReactNode, useCallback, useMemo } from "react";
 import { clusterApiUrl } from "@solana/web3.js";
 
@@ -15,8 +14,17 @@ export const WalletButton = dynamic(async () => (await import("@solana/wallet-ad
 });
 
 export function SolanaProvider({ children }: { children: ReactNode }) {
-  const endpoint = clusterApiUrl("devnet");
-  const wallets = [new PhantomWalletAdapter()];
+  // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
+  const network = WalletAdapterNetwork.Devnet;
+
+  // You can also provide a custom RPC endpoint.
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+  const wallets = useMemo(
+    () => [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [network]
+  );
 
   const onError = useCallback((error: WalletError) => {
     console.error(error);
