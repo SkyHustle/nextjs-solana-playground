@@ -22,5 +22,5 @@ export default function AccountDetailFeature() {
     return <div>Error loading account</div>;
   }
 
-  return <AccountDetails address={address.toString()} />;
+  return <AccountDetails address={address} />;
 }
