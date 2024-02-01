@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { PublicKey } from "@solana/web3.js";
 
-export default function AccountDetails({ address }: { address: string }) {
+export default function AccountDetails({ address }: { address: PublicKey }) {
   return (
     <div className="lg:flex lg:items-center lg:justify-between p-5">
       <div className="min-w-0 flex-1">
@@ -17,7 +17,7 @@ export default function AccountDetails({ address }: { address: string }) {
         <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
           <div className="mt-2 flex items-center text-sm text-gray-500">
             <AtSymbolIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-            <ExplorerLink path={address} label={ellipsify(address.toString())} />
+            <ExplorerLink path={address.toString()} label={ellipsify(address.toString())} />
           </div>
           <div className="mt-2 flex items-center text-sm text-gray-500">
             <CurrencyDollarIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
