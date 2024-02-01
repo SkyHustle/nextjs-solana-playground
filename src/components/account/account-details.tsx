@@ -81,10 +81,15 @@ export function ellipsify(str = "", len = 4) {
 }
 
 export function AccountBalance({ address }: { address: PublicKey }) {
-  const query = useGetBalance({ address });
+  const { connection } = useConnection();
+
+  const query = useQuery({
+    queryKey: ["get-balance", { endpoint: connection.rpcEndpoint, address }],
+    queryFn: () => connection.getBalance(address),
+  });
 
   if (query.isLoading) {
-    return <div>Loading...</div>;
+    return <h2>Loading...</h2>;
   }
 
   if (query.error) {
@@ -97,21 +102,8 @@ export function AccountBalance({ address }: { address: PublicKey }) {
         className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight cursor-pointer"
         onClick={() => query.refetch()}
       >
-        {query.data ? <BalanceSol balance={query.data} /> : "..."} SOL
+        {query.data ? <span>{Math.round((query.data / LAMPORTS_PER_SOL) * 100000) / 100000}</span> : "..."} SOL
       </h2>
     </div>
   );
-}
-
-export function useGetBalance({ address }: { address: PublicKey }) {
-  const { connection } = useConnection();
-
-  return useQuery({
-    queryKey: ["get-balance", { endpoint: connection.rpcEndpoint, address }],
-    queryFn: () => connection.getBalance(address),
-  });
-}
-
-function BalanceSol({ balance }: { balance: number }) {
-  return <span>{Math.round((balance / LAMPORTS_PER_SOL) * 100000) / 100000}</span>;
 }
