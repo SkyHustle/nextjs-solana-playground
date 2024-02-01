@@ -93,7 +93,8 @@ export function AccountBalance({ address }: { address: PublicKey }) {
   }
 
   if (query.error) {
-    return <div>Error: {query.error.message}</div>;
+    console.log(`Error fetching balance`, query.error.message);
+    return <h2>Error Fetching Balance...</h2>;
   }
 
   return (
