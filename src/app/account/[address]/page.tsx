@@ -4,6 +4,7 @@ import { PublicKey } from "@solana/web3.js";
 import { useMemo } from "react";
 
 import { useParams } from "next/navigation";
+import AccountDetails from "@/components/account/account-details";
 
 export default function AccountDetailFeature() {
   const params = useParams();
@@ -21,5 +22,5 @@ export default function AccountDetailFeature() {
     return <div>Error loading account</div>;
   }
 
-  return <div>Theres a wallet public key Yall</div>;
+  return <AccountDetails address={address.toString()} />;
 }
