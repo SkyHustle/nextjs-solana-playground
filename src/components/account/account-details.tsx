@@ -8,10 +8,12 @@ import {
 import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
 import { useConnection } from "@solana/wallet-adapter-react";
+import ChainlinkPriceFeed from "../chainlink/sol-usd-price-feed";
 
 export default function AccountDetails({ address }: { address: PublicKey }) {
   return (
     <div className="lg:flex lg:items-center lg:justify-between p-5">
+      <ChainlinkPriceFeed />
       <div className="min-w-0 flex-1">
         <AccountBalance address={address} />
         <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
