@@ -26,8 +26,10 @@ const ChainlinkPriceFeed = () => {
         dataFeed = await OCR2Feed.load(CHAINLINK_PROGRAM_ID, { connection });
 
         listener = dataFeed.onRound(feedAddress, (event) => {
-          const newPrice = event.answer.toNumber();
-          setPrice(newPrice);
+          const rawPrice = event.answer.toNumber();
+          const decimals = 8; // This should be set based on the actual decimals used by the price feed
+          const priceInDollars = rawPrice / Math.pow(10, decimals);
+          setPrice(priceInDollars);
         });
       } catch (error) {
         console.error("Failed to subscribe to Chainlink Price Feed:", error);
@@ -43,12 +45,7 @@ const ChainlinkPriceFeed = () => {
     };
   }, [publicKey, connection]);
 
-  return (
-    <div>
-      <h2>Chainlink SOL/USD Price Feed</h2>
-      <p>Latest Price: {price ? `$${price}` : "Loading..."}</p>
-    </div>
-  );
+  return <div>{price ? `$${price}` : "Loading..."}</div>;
 };
 
 export default ChainlinkPriceFeed;
