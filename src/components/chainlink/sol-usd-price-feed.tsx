@@ -46,7 +46,7 @@ const ChainlinkPriceFeed = () => {
     };
   }, [publicKey, connection]);
 
-  return <div>{price ? `$${price}` : "Loading..."}</div>;
+  return <div>{price ? `SOL Price: $${price}` : "Loading..."}</div>;
 };
 
 export default ChainlinkPriceFeed;
