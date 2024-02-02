@@ -1,80 +1,91 @@
 import { PublicKey } from "@solana/web3.js";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 
 export function AccountTransactions({ address }: { address: PublicKey }) {
   const query = useGetSignatures({ address });
-  const [showAll, setShowAll] = useState(false);
 
   const items = useMemo(() => {
-    if (showAll) return query.data;
-    return query.data?.slice(0, 5);
-  }, [query.data, showAll]);
+    return query.data;
+  }, [query.data]);
 
   return (
-    <div className="space-y-2">
-      <div className="flex justify-between">
-        <h2 className="text-2xl font-bold">Transaction History</h2>
-        <div className="space-x-2">
+    <div className="px-4 py-4 sm:px-6 lg:px-8">
+      <div className="sm:flex sm:items-center">
+        <div className="sm:flex-auto">
+          <h1 className="text-base font-semibold leading-6 text-gray-900">Transaction History</h1>
+        </div>
+        <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           {query.isLoading ? (
             <span className="loading loading-spinner"></span>
           ) : (
-            <button className="btn btn-sm btn-outline" onClick={() => query.refetch()}>
-              <ArrowPathIcon className="h-6 w-6" />
+            <button
+              type="button"
+              className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={() => query.refetch()}
+            >
+              <ArrowPathIcon className="h-4 w-4" />
             </button>
           )}
         </div>
       </div>
       {query.isError && <pre className="alert alert-error">Error: {query.error?.message.toString()}</pre>}
-      {query.isSuccess && (
-        <div>
-          {query.data.length === 0 ? (
-            <div>No transactions found.</div>
-          ) : (
-            <table className="table border-4 rounded-lg border-separate border-base-300">
-              <thead>
-                <tr>
-                  <th>Signature</th>
-                  <th className="text-right">Slot</th>
-                  <th>Block Time</th>
-                  <th className="text-right">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items?.map((item) => (
-                  <tr key={item.signature}>
-                    <th className="font-mono">
-                      <ExplorerLink path={`tx/${item.signature}`} label={ellipsify(item.signature, 8)} />
-                    </th>
-                    <td className="font-mono text-right">
-                      <ExplorerLink path={`block/${item.slot}`} label={item.slot.toString()} />
-                    </td>
-                    <td>{new Date((item.blockTime ?? 0) * 1000).toISOString()}</td>
-                    <td className="text-right">
-                      {item.err ? (
-                        <div className="badge badge-error" title={JSON.stringify(item.err)}>
-                          Failed
-                        </div>
-                      ) : (
-                        <div className="badge badge-success">Success</div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-                {(query.data?.length ?? 0) > 5 && (
+
+      {query.isSuccess && query.data.length === 0 ? (
+        <div className="text-base font-semibold leading-6 text-gray-900">No transactions found.</div>
+      ) : (
+        <div className="mt-8 flow-root">
+          <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+              <table className="min-w-full divide-y divide-gray-300">
+                <thead>
                   <tr>
-                    <td colSpan={4} className="text-center">
-                      <button className="btn btn-xs btn-outline" onClick={() => setShowAll(!showAll)}>
-                        {showAll ? "Show Less" : "Show All"}
-                      </button>
-                    </td>
+                    <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
+                      Signature
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Slot
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Block Time
+                    </th>
+                    <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                      Status
+                    </th>
+                    <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
+                      <span className="sr-only">Edit</span>
+                    </th>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          )}
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {items?.map((item) => (
+                    <tr key={item.signature}>
+                      <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                        <ExplorerLink path={`tx/${item.signature}`} label={ellipsify(item.signature, 8)} />
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        <ExplorerLink path={`block/${item.slot}`} label={item.slot.toString()} />
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {new Date((item.blockTime ?? 0) * 1000).toISOString()}
+                      </td>
+                      <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {item.err ? (
+                          <div className="badge badge-error" title={JSON.stringify(item.err)}>
+                            Failed
+                          </div>
+                        ) : (
+                          <div className="badge badge-success">Success</div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
     </div>
