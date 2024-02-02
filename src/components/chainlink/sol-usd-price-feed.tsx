@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useConnection, useWallet, useAnchorWallet } from "@solana/wallet-adapter-react";
+import { useConnection, useAnchorWallet } from "@solana/wallet-adapter-react";
 import { OCR2Feed } from "@chainlink/solana-sdk";
-import { PublicKey, Transaction } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import { AnchorProvider } from "@project-serum/anchor";
 
 const ChainlinkPriceFeed = () => {
