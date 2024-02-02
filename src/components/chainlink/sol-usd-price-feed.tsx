@@ -29,7 +29,8 @@ const ChainlinkPriceFeed = () => {
           const rawPrice = event.answer.toNumber();
           const decimals = 8; // This should be set based on the actual decimals used by the price feed
           const priceInDollars = rawPrice / Math.pow(10, decimals);
-          setPrice(priceInDollars);
+          const formattedPrice = parseFloat(priceInDollars.toFixed(2)); // Limit to 2 decimal places and convert back to number
+          setPrice(formattedPrice);
         });
       } catch (error) {
         console.error("Failed to subscribe to Chainlink Price Feed:", error);
