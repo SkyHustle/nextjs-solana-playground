@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
+import { ExplorerLink, Ellipsify } from "../ui/link-display";
 
 export function AccountTransactions({ address }: { address: PublicKey }) {
   const query = useGetSignatures({ address });
@@ -63,7 +64,7 @@ export function AccountTransactions({ address }: { address: PublicKey }) {
                   {items?.map((item) => (
                     <tr key={item.signature}>
                       <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                        <ExplorerLink path={`tx/${item.signature}`} label={ellipsify(item.signature, 8)} />
+                        <ExplorerLink path={`tx/${item.signature}`} label={Ellipsify(item.signature, 8)} />
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                         <ExplorerLink path={`block/${item.slot}`} label={item.slot.toString()} />
@@ -99,24 +100,4 @@ export function useGetSignatures({ address }: { address: PublicKey }) {
     queryKey: ["get-signatures", { endpoint: connection.rpcEndpoint, address }],
     queryFn: () => connection.getConfirmedSignaturesForAddress2(address),
   });
-}
-
-export function ExplorerLink({ path, label, className }: { path: string; label: string; className?: string }) {
-  return (
-    <a
-      href={`https://explorer.solana.com/address/${path}?cluster=devnet`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={className ? className : `link font-mono`}
-    >
-      {label}
-    </a>
-  );
-}
-
-export function ellipsify(str = "", len = 4) {
-  if (str.length > 30) {
-    return str.substring(0, len) + "...." + str.substring(str.length - len, str.length);
-  }
-  return str;
 }

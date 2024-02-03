@@ -9,6 +9,7 @@ import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useQuery } from "@tanstack/react-query";
 import { useConnection } from "@solana/wallet-adapter-react";
 import ChainlinkPriceFeed from "../chainlink/sol-usd-price-feed";
+import { ExplorerLink, Ellipsify } from "../ui/link-display";
 
 export default function AccountDetails({ address }: { address: PublicKey }) {
   return (
@@ -18,7 +19,7 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
         <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
           <div className="mt-2 flex items-center text-sm text-gray-500">
             <AtSymbolIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-            <ExplorerLink path={address.toString()} label={ellipsify(address.toString())} />
+            <ExplorerLink path={`account/${address.toString()}`} label={Ellipsify(address.toString())} />
           </div>
           <div className="mt-2 flex items-center text-sm text-gray-500">
             <CurrencyDollarIcon className="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
@@ -59,26 +60,6 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
       </div>
     </div>
   );
-}
-
-export function ExplorerLink({ path, label, className }: { path: string; label: string; className?: string }) {
-  return (
-    <a
-      href={`https://explorer.solana.com/address/${path}?cluster=devnet`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={className ? className : `link font-mono`}
-    >
-      {label}
-    </a>
-  );
-}
-
-export function ellipsify(str = "", len = 4) {
-  if (str.length > 30) {
-    return str.substring(0, len) + "...." + str.substring(str.length - len, str.length);
-  }
-  return str;
 }
 
 export function AccountBalance({ address }: { address: PublicKey }) {
