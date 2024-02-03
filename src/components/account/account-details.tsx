@@ -13,7 +13,7 @@ import { ExplorerLink, Ellipsify } from "../ui/link-display";
 
 export default function AccountDetails({ address }: { address: PublicKey }) {
   return (
-    <div className="lg:flex lg:items-center lg:justify-between p-5">
+    <div className="lg:flex lg:items-center lg:justify-between pt-8 pb-8">
       <div className="min-w-0 flex-1">
         <AccountBalance address={address} />
         <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
