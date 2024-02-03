@@ -10,11 +10,20 @@ import { useQuery } from "@tanstack/react-query";
 import { useConnection } from "@solana/wallet-adapter-react";
 import ChainlinkPriceFeed from "../chainlink/sol-usd-price-feed";
 import { ExplorerLink, Ellipsify } from "../ui/link-display";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 
 export default function AccountDetails({ address }: { address: PublicKey }) {
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [airdropAmount, setAirdropAmount] = useState("");
-  console.log(`Airdrop Amount: ${airdropAmount} SOL`);
+  const mutation = useRequestAirdrop({ address });
+
+  function handleRequestAirdrop() {
+    console.log(`Requesting airdrop of ${airdropAmount} SOL to ${address.toString()}`);
+    mutation.mutateAsync(parseFloat(airdropAmount)).then(() => {
+      setAirdropAmount("");
+      setShowTransactionModal(false);
+    });
+  }
 
   return (
     <div className="lg:flex lg:items-center lg:justify-between pt-8 pb-8">
@@ -72,7 +81,7 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
                   <button
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
-                    onClick={() => setShowTransactionModal(false)}
+                    onClick={handleRequestAirdrop}
                   >
                     Request Airdrop
                   </button>
@@ -189,4 +198,37 @@ export function TransactionModal({
       </Dialog>
     </Transition.Root>
   );
+}
+
+export function useRequestAirdrop({ address }: { address: PublicKey }) {
+  const { connection } = useConnection();
+  // const transactionToast = useTransactionToast();
+  const client = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["airdrop", { endpoint: connection.rpcEndpoint, address }],
+    mutationFn: async (amount: number = 1) => {
+      const [latestBlockhash, signature] = await Promise.all([
+        connection.getLatestBlockhash(),
+        connection.requestAirdrop(address, amount * LAMPORTS_PER_SOL),
+      ]);
+
+      await connection.confirmTransaction({ signature, ...latestBlockhash }, "confirmed");
+      return signature;
+    },
+    onSuccess: (signature) => {
+      // transactionToast(signature);
+      return Promise.all([
+        client.invalidateQueries({
+          queryKey: ["get-balance", { endpoint: connection.rpcEndpoint, address }],
+        }),
+        client.invalidateQueries({
+          queryKey: ["get-signatures", { endpoint: connection.rpcEndpoint, address }],
+        }),
+      ]);
+    },
+    onError: (error) => {
+      console.error(`Error requesting airdrop`, error);
+    },
+  });
 }
