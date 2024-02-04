@@ -15,16 +15,25 @@ import { TransactionModal } from "../ui/transaction-modal";
 import { useRequestAirdrop } from "@/hooks/account";
 
 export default function AccountDetails({ address }: { address: PublicKey }) {
-  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [showAirdropModal, setShowAirdropModal] = useState(false);
   const [airdropAmount, setAirdropAmount] = useState("");
   const mutation = useRequestAirdrop({ address });
+
+  const [showSendModal, setShowSendModal] = useState(false);
+  const [sendAmount, setSendAmount] = useState("");
+  const [sendAddress, setSendAddress] = useState("");
 
   function handleRequestAirdrop() {
     console.log(`Requesting airdrop of ${airdropAmount} SOL to ${address.toString()}`);
     mutation.mutateAsync(parseFloat(airdropAmount)).then(() => {
       setAirdropAmount("");
-      setShowTransactionModal(false);
+      setShowAirdropModal(false);
     });
+  }
+
+  function handleSendSol() {
+    console.log(`Sending ${sendAmount} SOL to ${sendAddress}`);
+    setShowSendModal(false);
   }
 
   return (
@@ -47,11 +56,11 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
           <button
             type="button"
             className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            onClick={() => setShowTransactionModal(true)}
+            onClick={() => setShowAirdropModal(true)}
           >
             <PaperAirplaneIcon className="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
             Airdrop
-            <TransactionModal hide={() => setShowTransactionModal(false)} show={showTransactionModal}>
+            <TransactionModal hide={() => setShowAirdropModal(false)} show={showAirdropModal}>
               <div>
                 <div>
                   <div className="mx-auto flex items-center justify-center">
@@ -61,9 +70,6 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
                     <h2 className="text-base font-semibold leading-6 text-gray-900">Airdrop</h2>
                     <div className="mt-2">
                       <div>
-                        <label htmlFor="amount" className="sr-only">
-                          Quantity
-                        </label>
                         <input
                           type="number"
                           step="any"
@@ -90,7 +96,7 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
                   <button
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 sm:col-start-2"
-                    onClick={() => setShowTransactionModal(false)}
+                    onClick={() => setShowAirdropModal(false)}
                   >
                     Close
                   </button>
@@ -104,9 +110,64 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
           <button
             type="button"
             className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            onClick={() => setShowSendModal(true)}
           >
             <ArrowUpIcon className="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
             Send
+            <TransactionModal hide={() => setShowSendModal(false)} show={showSendModal}>
+              <div>
+                <div>
+                  <div className="mx-auto flex items-center justify-center">
+                    <ArrowUpIcon className="-ml-0.5 mr-1.5 h-7 w-7 text-gray-400" aria-hidden="true" />
+                  </div>
+                  <div className="mt-3 text-center sm:mt-5">
+                    <h2 className="text-base font-semibold leading-6 text-gray-900">Send Sol</h2>
+                    <div className="mt-2">
+                      <div>
+                        <input
+                          type="number"
+                          step="any"
+                          name="send-amount"
+                          id="send-amount"
+                          min="1"
+                          value={sendAmount}
+                          onChange={(e) => setSendAmount(e.target.value)}
+                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          placeholder="How many SOL to send?"
+                        />
+                      </div>
+                      <div>
+                        <input
+                          type="text"
+                          name="send-to"
+                          id="send-to"
+                          value={sendAddress}
+                          onChange={(e) => setSendAddress(e.target.value)}
+                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                          placeholder="Address of Public Key to send to..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                  <button
+                    type="button"
+                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                    onClick={handleSendSol}
+                  >
+                    Send Sol
+                  </button>
+                  <button
+                    type="button"
+                    className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 sm:col-start-2"
+                    onClick={() => setShowSendModal(false)}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </TransactionModal>
           </button>
         </span>
 
