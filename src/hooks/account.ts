@@ -1,7 +1,15 @@
-import { PublicKey } from "@solana/web3.js";
+import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useConnection } from "@solana/wallet-adapter-react";
-import { LAMPORTS_PER_SOL } from "@solana/web3.js";
+
+export function useGetBalance(address: PublicKey) {
+  const { connection } = useConnection();
+
+  return useQuery({
+    queryKey: ["get-balance", { endpoint: connection.rpcEndpoint, address }],
+    queryFn: () => connection.getBalance(address),
+  });
+}
 
 export function useRequestAirdrop({ address }: { address: PublicKey }) {
   const { connection } = useConnection();

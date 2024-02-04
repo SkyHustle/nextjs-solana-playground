@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   AtSymbolIcon,
   CurrencyDollarIcon,
@@ -6,18 +7,15 @@ import {
   PaperAirplaneIcon,
 } from "@heroicons/react/20/solid";
 import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
-import { useQuery } from "@tanstack/react-query";
-import { useConnection } from "@solana/wallet-adapter-react";
-import ChainlinkPriceFeed from "../chainlink/sol-usd-price-feed";
-import { ExplorerLink, Ellipsify } from "../ui/link-display";
-import { useState } from "react";
-import { TransactionModal } from "../ui/transaction-modal";
-import { useRequestAirdrop } from "@/hooks/account";
+import ChainlinkPriceFeed from "@/components/chainlink/sol-usd-price-feed";
+import { ExplorerLink, Ellipsify } from "@/components/ui/link-display";
+import { TransactionModal } from "@/components/ui/transaction-modal";
+import { useRequestAirdrop, useGetBalance } from "@/hooks/account";
 
 export default function AccountDetails({ address }: { address: PublicKey }) {
   const [showAirdropModal, setShowAirdropModal] = useState(false);
   const [airdropAmount, setAirdropAmount] = useState("");
-  const mutation = useRequestAirdrop({ address });
+  const airdropMutation = useRequestAirdrop({ address });
 
   const [showSendModal, setShowSendModal] = useState(false);
   const [sendAmount, setSendAmount] = useState("");
@@ -25,7 +23,7 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
 
   function handleRequestAirdrop() {
     console.log(`Requesting airdrop of ${airdropAmount} SOL to ${address.toString()}`);
-    mutation.mutateAsync(parseFloat(airdropAmount)).then(() => {
+    airdropMutation.mutateAsync(parseFloat(airdropAmount)).then(() => {
       setAirdropAmount("");
       setShowAirdropModal(false);
     });
@@ -186,12 +184,7 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
 }
 
 export function AccountBalance({ address }: { address: PublicKey }) {
-  const { connection } = useConnection();
-
-  const query = useQuery({
-    queryKey: ["get-balance", { endpoint: connection.rpcEndpoint, address }],
-    queryFn: () => connection.getBalance(address),
-  });
+  const query = useGetBalance(address);
 
   if (query.isLoading) {
     return <h2>Loading...</h2>;
