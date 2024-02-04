@@ -10,9 +10,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useConnection } from "@solana/wallet-adapter-react";
 import ChainlinkPriceFeed from "../chainlink/sol-usd-price-feed";
 import { ExplorerLink, Ellipsify } from "../ui/link-display";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { TransactionModal } from "../ui/transaction-modal";
+import { useRequestAirdrop } from "@/hooks/account";
 
 export default function AccountDetails({ address }: { address: PublicKey }) {
   const [showTransactionModal, setShowTransactionModal] = useState(false);
@@ -151,37 +151,4 @@ export function AccountBalance({ address }: { address: PublicKey }) {
       </h2>
     </div>
   );
-}
-
-export function useRequestAirdrop({ address }: { address: PublicKey }) {
-  const { connection } = useConnection();
-  // const transactionToast = useTransactionToast();
-  const client = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["airdrop", { endpoint: connection.rpcEndpoint, address }],
-    mutationFn: async (amount: number = 1) => {
-      const [latestBlockhash, signature] = await Promise.all([
-        connection.getLatestBlockhash(),
-        connection.requestAirdrop(address, amount * LAMPORTS_PER_SOL),
-      ]);
-
-      await connection.confirmTransaction({ signature, ...latestBlockhash }, "confirmed");
-      return signature;
-    },
-    onSuccess: (signature) => {
-      // transactionToast(signature);
-      return Promise.all([
-        client.invalidateQueries({
-          queryKey: ["get-balance", { endpoint: connection.rpcEndpoint, address }],
-        }),
-        client.invalidateQueries({
-          queryKey: ["get-signatures", { endpoint: connection.rpcEndpoint, address }],
-        }),
-      ]);
-    },
-    onError: (error) => {
-      console.error(`Error requesting airdrop`, error);
-    },
-  });
 }

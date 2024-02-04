@@ -1,9 +1,8 @@
 import { PublicKey } from "@solana/web3.js";
 import { useMemo } from "react";
-import { useConnection } from "@solana/wallet-adapter-react";
-import { useQuery } from "@tanstack/react-query";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 import { ExplorerLink, Ellipsify } from "../ui/link-display";
+import { useGetSignatures } from "@/hooks/account";
 
 export function AccountTransactions({ address }: { address: PublicKey }) {
   const query = useGetSignatures({ address });
@@ -91,13 +90,4 @@ export function AccountTransactions({ address }: { address: PublicKey }) {
       )}
     </div>
   );
-}
-
-export function useGetSignatures({ address }: { address: PublicKey }) {
-  const { connection } = useConnection();
-
-  return useQuery({
-    queryKey: ["get-signatures", { endpoint: connection.rpcEndpoint, address }],
-    queryFn: () => connection.getConfirmedSignaturesForAddress2(address),
-  });
 }
