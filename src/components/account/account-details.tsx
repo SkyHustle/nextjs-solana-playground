@@ -10,7 +10,7 @@ import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import ChainlinkPriceFeed from "@/components/chainlink/sol-usd-price-feed";
 import { ExplorerLink, Ellipsify } from "@/components/ui/link-display";
 import { TransactionModal } from "@/components/ui/transaction-modal";
-import { useRequestAirdrop, useGetBalance } from "@/hooks/account";
+import { useRequestAirdrop, useGetBalance, useTransferSol } from "@/hooks/account";
 
 export default function AccountDetails({ address }: { address: PublicKey }) {
   const [showAirdropModal, setShowAirdropModal] = useState(false);
@@ -20,6 +20,7 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [transferAmount, setTransferAmount] = useState("");
   const [transferAddress, setTransferAddress] = useState("");
+  const transferSolMutation = useTransferSol({ address });
 
   function handleRequestAirdrop() {
     console.log(`Requesting airdrop of ${airdropAmount} SOL to ${address.toString()}`);
@@ -31,7 +32,16 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
 
   function handleSendSol() {
     console.log(`Sending ${transferAmount} SOL to ${transferAddress}`);
-    setShowTransferModal(false);
+    transferSolMutation
+      .mutateAsync({
+        destination: new PublicKey(transferAddress),
+        amount: parseFloat(transferAmount),
+      })
+      .then(() => {
+        setTransferAmount("");
+        setTransferAddress("");
+        setShowTransferModal(false);
+      });
   }
 
   return (
