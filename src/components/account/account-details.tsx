@@ -17,9 +17,9 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
   const [airdropAmount, setAirdropAmount] = useState("");
   const airdropMutation = useRequestAirdrop({ address });
 
-  const [showSendModal, setShowSendModal] = useState(false);
-  const [sendAmount, setSendAmount] = useState("");
-  const [sendAddress, setSendAddress] = useState("");
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [transferAmount, setTransferAmount] = useState("");
+  const [transferAddress, setTransferAddress] = useState("");
 
   function handleRequestAirdrop() {
     console.log(`Requesting airdrop of ${airdropAmount} SOL to ${address.toString()}`);
@@ -30,8 +30,8 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
   }
 
   function handleSendSol() {
-    console.log(`Sending ${sendAmount} SOL to ${sendAddress}`);
-    setShowSendModal(false);
+    console.log(`Sending ${transferAmount} SOL to ${transferAddress}`);
+    setShowTransferModal(false);
   }
 
   return (
@@ -108,11 +108,11 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
           <button
             type="button"
             className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-            onClick={() => setShowSendModal(true)}
+            onClick={() => setShowTransferModal(true)}
           >
             <ArrowUpIcon className="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
             Send
-            <TransactionModal hide={() => setShowSendModal(false)} show={showSendModal}>
+            <TransactionModal hide={() => setShowTransferModal(false)} show={showTransferModal}>
               <div>
                 <div>
                   <div className="mx-auto flex items-center justify-center">
@@ -128,21 +128,21 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
                           name="send-amount"
                           id="send-amount"
                           min="1"
-                          value={sendAmount}
-                          onChange={(e) => setSendAmount(e.target.value)}
+                          value={transferAmount}
+                          onChange={(e) => setTransferAmount(e.target.value)}
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                           placeholder="How many SOL to send?"
                         />
                       </div>
-                      <div>
+                      <div className="pt-4">
                         <input
                           type="text"
                           name="send-to"
                           id="send-to"
-                          value={sendAddress}
-                          onChange={(e) => setSendAddress(e.target.value)}
+                          value={transferAddress}
+                          onChange={(e) => setTransferAddress(e.target.value)}
                           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                          placeholder="Address of Public Key to send to..."
+                          placeholder="Address or Public Key to send to..."
                         />
                       </div>
                     </div>
@@ -159,7 +159,7 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
                   <button
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 sm:col-start-2"
-                    onClick={() => setShowSendModal(false)}
+                    onClick={() => setShowTransferModal(false)}
                   >
                     Close
                   </button>
