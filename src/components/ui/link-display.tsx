@@ -4,7 +4,7 @@ export function ExplorerLink({ path, label, className }: { path: string; label: 
       href={`https://explorer.solana.com/${path}?cluster=devnet`}
       target="_blank"
       rel="noopener noreferrer"
-      className={className ? className : `link font-mono`}
+      className={className ? className : `link font-mono hover:text-indigo-500`}
     >
       {label}
     </a>
