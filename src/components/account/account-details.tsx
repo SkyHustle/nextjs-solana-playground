@@ -6,12 +6,13 @@ import {
   ArrowDownIcon,
   PaperAirplaneIcon,
 } from "@heroicons/react/20/solid";
-import { ClipboardIcon } from "@heroicons/react/24/outline";
+
 import { PublicKey, LAMPORTS_PER_SOL } from "@solana/web3.js";
 import ChainlinkPriceFeed from "@/components/chainlink/sol-usd-price-feed";
 import { ExplorerLink, Ellipsify } from "@/components/ui/link-display";
 import { TransactionModal } from "@/components/ui/transaction-modal";
 import { useRequestAirdrop, useGetBalance, useTransferSol } from "@/hooks/account";
+import { CopyToClipboard } from "@/components/ui/copy-to-clipboard";
 
 export default function AccountDetails({ address }: { address: PublicKey }) {
   const [showAirdropModal, setShowAirdropModal] = useState(false);
@@ -45,17 +46,6 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
         setTransferAddress("");
         setShowTransferModal(false);
       });
-  }
-
-  async function copyToClipboard(text: string) {
-    try {
-      await navigator.clipboard.writeText(text);
-      console.log(`Copied ${text} to clipboard`);
-      // alert("Copied to clipboard"); // Optionally, show some feedback
-      // Toast this shit!
-    } catch (err) {
-      console.error("Failed to copy: ", err);
-    }
   }
 
   return (
@@ -213,15 +203,7 @@ export default function AccountDetails({ address }: { address: PublicKey }) {
                 <h2 className="text-base font-semibold leading-6 text-gray-900">Receive Address</h2>
                 <div className="mt-2 flex items-center">
                   <div className="mr-1">{address.toString()}</div>
-
-                  <button
-                    onClick={() => copyToClipboard(address.toString())}
-                    className="flex-shrink-0 h-6 w-6 text-gray-400 hover:text-indigo-500 hover:cursor-pointer"
-                    aria-hidden="true"
-                    title="Copy to clipboard"
-                  >
-                    <ClipboardIcon />
-                  </button>
+                  <CopyToClipboard copyText={address.toString()} />
                 </div>
               </div>
             </div>
