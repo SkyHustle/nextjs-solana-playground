@@ -11,7 +11,7 @@ const pages: { label: string; path: string }[] = [
   { label: "Tokens", path: "/tokens" },
 ];
 
-export default function NavBar() {
+export function NavBar() {
   const pathname = usePathname();
 
   return (
