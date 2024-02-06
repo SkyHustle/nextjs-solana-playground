@@ -1,7 +1,7 @@
 "use client";
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { WalletButton } from "../solana/solana-provider";
+import { WalletButton } from "@/app/solana-provider";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
