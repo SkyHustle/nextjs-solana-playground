@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useConnection, useAnchorWallet } from "@solana/wallet-adapter-react";
 import { OCR2Feed } from "@chainlink/solana-sdk";
 import { PublicKey } from "@solana/web3.js";
 import { AnchorProvider } from "@project-serum/anchor";
+
+// Note that the Wallet object provided by the useWallet hook from @solana/wallet-adapter-react
+// is not compatible with the Wallet object that the Anchor Provider expects
+import { useConnection, useAnchorWallet } from "@solana/wallet-adapter-react";
 
 const ChainlinkPriceFeed = () => {
   const [price, setPrice] = useState<number>();
